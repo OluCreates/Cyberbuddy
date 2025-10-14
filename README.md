@@ -38,6 +38,12 @@ CyberBuddy is an all-in-one browser extension that:
 - **Statistical Analysis** (burstiness, perplexity indicators)
 
  Installation
+Open Chrome and go to chrome://extensions/
+Enable Developer mode (toggle in top right)
+Click "Load unpacked"
+Select the cyberbuddy folder
+The extension is now installed! Click the icon to start scanning.
+
 
 ### From Source
 
@@ -45,9 +51,7 @@ CyberBuddy is an all-in-one browser extension that:
 ```bash
    git clone https://github.com/TheCreator771/cyberbuddy.git
 
-Open Chrome and go to chrome://extensions/
-Enable Developer mode (toggle in top right)
-Click "Load unpacked"
-Select the cyberbuddy folder
-The extension is now installed! Click the icon to start scanning.
+
+
+
 
