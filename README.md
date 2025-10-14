@@ -49,7 +49,7 @@ The extension is now installed! Click the icon to start scanning.
 
 1. Clone this repository:
 ```bash
-   git clone https://github.com/TheCreator771/cyberbuddy.git
+   git clone https://github.com/OluCreates/cyberbuddy.git
 
 
 
