@@ -5,63 +5,480 @@
     <title>CyberBuddy</title>
     <style>
       :root{
-        --bg1:#0b1220; --bg2:#111a2e;
-        --card:#121c33; --accent:#39d0ff; --ok:#2ecc71; --warn:#f1c40f; --bad:#e74c3c;
-        --text:#e8f0ff; --muted:#9bb0d1;
+        --primary:#4A9EFF; --secondary:#FFFFFF;
+        --bg1:#0f172a; --bg2:#1e293b;
+        --card:#1e293b; --accent:#4A9EFF; --ok:#10B981; --warn:#F59E0B; --bad:#EF4444;
+        --text:#e2e8f0; --muted:#94a3b8;
       }
       *{box-sizing:border-box}
       body{
         margin:0; padding:14px; width:360px;
         font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         color:var(--text);
-        background: radial-gradient(120% 120% at 0% 0%, var(--bg2), var(--bg1));
+        background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
       }
-      .title { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-      .logo { width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg, #0ff, #08f); box-shadow:0 0 12px rgba(56,200,255,.4); }
-      h3 { margin:0; font-weight:600; letter-spacing:.3px; }
-      .card{ background:var(--card); border:1px solid #1e2a44; border-radius:12px; padding:12px; box-shadow:0 4px 18px rgba(0,0,0,.25); margin-bottom:10px;}
+      .title { display:flex; align-items:center; gap:8px; margin-bottom:10px; justify-content: space-between; }
+      .title-left { display:flex; align-items:center; gap:8px; }
+      .logo { width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg, var(--primary), #2563eb); box-shadow:0 0 12px rgba(74,158,255,.5); }
+      h3 { margin:0; font-weight:600; letter-spacing:.3px; color:var(--secondary); }
+      .card{ background:var(--card); border:1px solid rgba(74,158,255,.2); border-radius:12px; padding:12px; box-shadow:0 4px 18px rgba(0,0,0,.3); margin-bottom:10px;}
+      
+      /* BRIGHTER PULSATING ANIMATION FOR RESULTS */
+      .card.results-active {
+        animation: brightPulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes brightPulse {
+        0%, 100% {
+          box-shadow: 0 4px 18px rgba(0,0,0,.3), 0 0 20px rgba(74,158,255,.3);
+          border-color: rgba(74,158,255,.3);
+        }
+        50% {
+          box-shadow: 0 4px 25px rgba(0,0,0,.4), 0 0 40px rgba(74,158,255,.8), 0 0 60px rgba(74,158,255,.6);
+          border-color: rgba(74,158,255,.8);
+        }
+      }
+      
+      .verdict.pulsate-green {
+        animation: greenPulse 2s ease-in-out infinite;
+      }
+      
+      .verdict.pulsate-yellow {
+        animation: yellowPulse 2s ease-in-out infinite;
+      }
+      
+      .verdict.pulsate-red {
+        animation: redPulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes greenPulse {
+        0%, 100% {
+          text-shadow: 0 0 10px rgba(16,185,129,.5);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(16,185,129,1), 0 0 40px rgba(16,185,129,.8);
+        }
+      }
+      
+      @keyframes yellowPulse {
+        0%, 100% {
+          text-shadow: 0 0 10px rgba(245,158,11,.5);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(245,158,11,1), 0 0 40px rgba(245,158,11,.8);
+        }
+      }
+      
+      @keyframes redPulse {
+        0%, 100% {
+          text-shadow: 0 0 10px rgba(239,68,68,.5);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(239,68,68,1), 0 0 40px rgba(239,68,68,.8);
+        }
+      }
+      
       .row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
-      .pill{ padding:4px 8px; border-radius:999px; background:#0f1a30; color:var(--muted); border:1px solid #203152; font-size:12px }
+      .pill{ padding:4px 8px; border-radius:999px; background:#0f1a30; color:var(--muted); border:1px solid rgba(74,158,255,.3); font-size:12px }
       .verdict{ font-weight:600; margin-bottom:6px }
       .v-green{ color:var(--ok) } .v-yellow{ color:var(--warn) } .v-red{ color:var(--bad) } .v-none{ color:var(--muted) }
       ul{ margin:6px 0 0 18px; padding:0 }
       button{
         width:100%; margin-top:10px; padding:10px 12px;
-        background:linear-gradient(135deg, #0bd7ff, #0a84ff);
+        background:linear-gradient(135deg, var(--primary), #2563eb);
         color:white; border:none; border-radius:10px; cursor:pointer;
         font-weight:600;
-        box-shadow:0 6px 18px rgba(10,132,255,.3);
+        box-shadow:0 6px 18px rgba(74,158,255,.4);
         display:flex; align-items:center; justify-content:center; gap:8px;
+        transition: transform 0.1s, opacity 0.2s;
       }
       button:disabled{ opacity:.7; cursor:default }
-      button:active{ transform:translateY(1px) }
+      button:hover:not(:disabled){ transform:translateY(-1px); box-shadow:0 8px 20px rgba(74,158,255,.5); }
+      button:active:not(:disabled){ transform:translateY(1px) }
       .muted{ color:var(--muted); font-size:12px; margin-top:6px }
       .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:spin .8s linear infinite }
       @keyframes spin { to { transform: rotate(360deg) } }
 
       .history{ max-height:150px; overflow:auto; display:flex; flex-direction:column; gap:6px; }
-      .hist-item{ display:flex; gap:8px; align-items:center; padding:8px; border-radius:10px; background:#0e1930; border:1px solid #203152; }
+      .hist-item{ display:flex; gap:8px; align-items:center; padding:8px; border-radius:10px; background:#0f1a30; border:1px solid rgba(74,158,255,.2); }
       .dot{ width:10px; height:10px; border-radius:50%; }
-      .dot.green{ background:#2ecc71 } .dot.yellow{ background:#f1c40f } .dot.red{ background:#e74c3c }
-      .link{ color:#9bd5ff; text-decoration:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:230px; }
-      .small{ font-size:11px; color:#9bb0d1 }
+      .dot.green{ background:#10B981 } .dot.yellow{ background:#F59E0B } .dot.red{ background:#EF4444 }
+      .link{ color:#7dd3fc; text-decoration:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:230px; }
+      .small{ font-size:11px; color:#94a3b8 }
+      
+      .text-analysis-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 3px 8px;
+        background: linear-gradient(135deg, rgba(74,158,255,.15), rgba(37,99,235,.15));
+        border: 1px solid rgba(74,158,255,.4);
+        border-radius: 6px;
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+        width: auto;
+        margin-top: 0;
+      }
+      .text-analysis-btn:hover {
+        background: linear-gradient(135deg, rgba(74,158,255,.25), rgba(37,99,235,.25));
+        border-color: var(--primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(74,158,255,.3);
+      }
+      .text-analysis-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Settings Icon Button */
+      .settings-btn {
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        background: rgba(74,158,255,.15);
+        border: 1px solid rgba(74,158,255,.3);
+        border-radius: 6px;
+        color: var(--primary);
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0;
+      }
+      .settings-btn:hover {
+        background: rgba(74,158,255,.25);
+        border-color: var(--primary);
+      }
+
+      .view { display: none; }
+      .view.active { display: block; }
+
+      /* Login View Styles */
+      .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 10px;
+        text-align: center;
+      }
+      .login-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+      .login-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--secondary);
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+      .login-text {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 20px;
+        line-height: 1.5;
+      }
+      .btn-login {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, var(--primary), #2563eb);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(74,158,255,.4);
+        transition: all 0.2s;
+      }
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74,158,255,.6);
+      }
+
+      /* Text Analysis Panel Styles */
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .back-btn {
+        width: auto;
+        padding: 6px 12px;
+        font-size: 12px;
+        background: rgba(74,158,255,.15);
+        border: 1px solid rgba(74,158,255,.3);
+        color: var(--primary);
+        margin-top: 0;
+      }
+      .back-btn:hover {
+        background: rgba(74,158,255,.25);
+        border-color: var(--primary);
+      }
+      textarea {
+        width: 100%;
+        min-height: 180px;
+        padding: 12px;
+        background: #0f1a30;
+        border: 1px solid rgba(74,158,255,.3);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13px;
+        line-height: 1.6;
+        resize: vertical;
+        margin-bottom: 8px;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74,158,255,.15);
+      }
+      textarea::placeholder {
+        color: var(--muted);
+        opacity: 0.6;
+      }
+      .word-count {
+        text-align: right;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      /* Settings Panel */
+      .settings-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(74,158,255,.1);
+      }
+      .settings-item:last-child {
+        border-bottom: none;
+      }
+      .settings-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .settings-value {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .toggle-switch {
+        position: relative;
+        width: 40px;
+        height: 22px;
+        background: #1e293b;
+        border: 1px solid rgba(74,158,255,.3);
+        border-radius: 11px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .toggle-switch.active {
+        background: linear-gradient(135deg, var(--primary), #2563eb);
+        border-color: var(--primary);
+        box-shadow: 0 0 15px rgba(74,158,255,.5);
+      }
+      .toggle-switch::after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.3s;
+        box-shadow: 0 2px 4px rgba(0,0,0,.2);
+      }
+      .toggle-switch.active::after {
+        left: 20px;
+      }
+      .btn-logout {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(239,68,68,.1);
+        color: #EF4444;
+        border: 1px solid rgba(239,68,68,.3);
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-logout:hover {
+        background: rgba(239,68,68,.2);
+        border-color: #EF4444;
+        transform: translateY(-1px);
+      }
     </style>
   </head>
   <body>
-    <div class="title"><div class="logo"></div><h3>CyberBuddy</h3></div>
+    <!-- Login View -->
+    <div id="loginView" class="view active">
+      <div class="title">
+        <div class="title-left">
+          <div class="logo"></div>
+          <h3>CyberBuddy</h3>
+        </div>
+      </div>
 
-    <div class="card">
-      <div id="scanning" class="small" style="display:none"></div>
-      <div id="verdict" class="verdict v-none">No scan yet</div>
-      <div id="pills" class="row"></div>
-      <ul id="reasons"></ul>
-      <div id="note" class="muted"></div>
-      <button id="scan"><span id="spin" class="spinner" style="display:none"></span><span id="scantext">Scan this page</span></button>
+      <div class="card">
+        <div class="login-container">
+          <div class="login-icon">🛡️</div>
+          <div class="login-title">Welcome to CyberBuddy</div>
+          <div class="login-text">
+            Sign in to start detecting AI content across the web
+          </div>
+          <button class="btn-login" id="loginBtn">Sign In / Sign Up</button>
+          <div class="muted" style="margin-top: 12px; text-align: center;">
+            After logging in, this popup will automatically update
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="verdict v-none">Scan History</div>
-      <div id="history" class="history"></div>
+    <!-- Main View -->
+    <div id="mainView" class="view">
+      <div class="title">
+        <div class="title-left">
+          <div class="logo"></div>
+          <h3>CyberBuddy</h3>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="text-analysis-btn" id="openTextAnalysis">
+            Analyze Text
+          </button>
+          <button class="settings-btn" id="openSettings">⚙️</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Scan Media Content</div>
+        <div class="muted" style="margin-bottom:10px">Analyzes images, videos, and audio on this page</div>
+        
+        <button id="scan"><span id="spin" class="spinner" style="display:none"></span><span id="scantext">Scan Page</span></button>
+      </div>
+
+      <div class="card" id="resultsCard">
+        <div id="scanning" class="small" style="display:none"></div>
+        <div id="verdict" class="verdict v-none">No scan yet</div>
+        <div id="pills" class="row"></div>
+        <ul id="reasons"></ul>
+        <div id="note" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Scan History</div>
+        <div id="history" class="history"></div>
+      </div>
+    </div>
+
+    <!-- Text Analysis Panel -->
+    <div id="textPanel" class="view">
+      <div class="panel-header">
+        <div class="title-left">
+          <div class="logo"></div>
+          <h3>Text Analysis</h3>
+        </div>
+        <button class="back-btn" id="backToMain">
+          ← Back
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Enter Text to Analyze</div>
+        <div class="muted" style="margin-bottom:10px">Paste or type any text to check if it's AI-generated</div>
+        <textarea id="textInput" placeholder="Paste your text here...
+
+Examples:
+• Article paragraphs
+• Social media posts
+• Email content
+• Product descriptions
+• Any text you want to verify"></textarea>
+        <div class="word-count"><span id="wordCount">0</span> words</div>
+        <button id="analyzeText"><span id="textSpin" class="spinner" style="display:none"></span><span id="analyzeTextLabel">Analyze Text</span></button>
+      </div>
+
+      <div class="card" id="textResultsCard" style="display:none">
+        <div id="textVerdict" class="verdict v-none"></div>
+        <div id="textPills" class="row"></div>
+        <ul id="textReasons"></ul>
+        <div id="textNote" class="muted"></div>
+      </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="view">
+      <div class="panel-header">
+        <div class="title-left">
+          <div class="logo"></div>
+          <h3>Settings</h3>
+        </div>
+        <button class="back-btn" id="backToMainFromSettings">
+          ← Back
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Account</div>
+        <div class="settings-item">
+          <div class="settings-label">Email</div>
+          <div class="settings-value" id="settingsEmail">Loading...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Content Settings</div>
+        <div class="settings-item">
+          <div>
+            <div class="settings-label">🚫 Block AI Content</div>
+            <div class="settings-value">Hide AI-generated images/videos from view</div>
+          </div>
+          <div class="toggle-switch" id="blockAIToggle"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Analysis Settings</div>
+        <div class="muted" style="margin-bottom:10px">Choose which content types to analyze</div>
+        <div class="settings-item">
+          <div>
+            <div class="settings-label">🖼️ Analyze Images</div>
+            <div class="settings-value">Detect AI in images (max 2 per scan)</div>
+          </div>
+          <div class="toggle-switch" id="analyzeImagesToggle"></div>
+        </div>
+        <div class="settings-item">
+          <div>
+            <div class="settings-label">🎬 Analyze Videos</div>
+            <div class="settings-value">Detect AI in video frames (max 2 per scan)</div>
+          </div>
+          <div class="toggle-switch" id="analyzeVideosToggle"></div>
+        </div>
+        <div class="settings-item">
+          <div>
+            <div class="settings-label">🎵 Analyze Audio</div>
+            <div class="settings-value">Detect AI in audio files</div>
+          </div>
+          <div class="toggle-switch" id="analyzeAudioToggle"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="verdict v-none">Actions</div>
+        <button class="btn-logout" id="logoutBtn">Sign Out</button>
+      </div>
     </div>
 
     <script src="popup.js"></script>
