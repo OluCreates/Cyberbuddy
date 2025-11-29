@@ -1,12 +1,32 @@
 {
   "manifest_version": 3,
-  "name": "CyberBuddy Detector",
-  "version": "1.0",
-  "description": "Analyze text, images, and videos on a page and show a Green/Yellow/Red verdict — fully local.",
-  "permissions": ["activeTab", "scripting", "storage"],
-  "action": { "default_popup": "popup.html", "default_title": "CyberBuddy" },
-  "background": { "service_worker": "background.js" },
+  "name": "CyberBuddy",
+  "version": "1.0.0",
+  "description": "AI content detection for the web",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
-    { "matches": ["<all_urls>"], "js": ["content_script.js"] }
-  ]
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://cyberbuddy.app/*", "http://localhost:*/*", "https://localhost:*/*"],
+      "js": ["website-bridge.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
